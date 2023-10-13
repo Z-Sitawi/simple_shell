@@ -10,8 +10,9 @@
 
 void display_prompt() {
     if (isatty(STDIN_FILENO)) {
-        printf("#cisfun$ ");
-        fflush(stdout);
+        char *prompt = "#cisfun$ ";
+        write(STDOUT_FILENO, prompt, strlen(prompt));
+        /* Use write to output the prompt directly to STDOUT */
     }
 }
 
@@ -62,7 +63,8 @@ int main() {
         display_prompt();
 
         if (fgets(input, sizeof(input), stdin) == NULL) {
-            printf("\n");
+            char newline = '\n';
+            write(STDOUT_FILENO, &newline, 1);
             break; /* End of file (Ctrl+D) was detected */
         }
 
