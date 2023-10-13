@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 
 #define MAX_INPUT_SIZE 1024
+#define MAX_ARGS 128
 
 void display_prompt() {
     if (isatty(STDIN_FILENO)) {
@@ -17,6 +18,17 @@ void display_prompt() {
 void execute_command(char *command) {
     pid_t child_pid;
     int status;
+    char *args[MAX_ARGS]; /* Array to hold command and its arguments */
+    int arg_count = 0;
+
+    /* Tokenize the command line into arguments */
+    char *token = strtok(command, " \t\n");
+    while (token != NULL) {
+        args[arg_count] = token;
+        arg_count++;
+        token = strtok(NULL, " \t\n");
+    }
+    args[arg_count] = NULL; /* Null-terminate the array of arguments */
 
     child_pid = fork();
 
@@ -24,10 +36,6 @@ void execute_command(char *command) {
         perror("fork");
     } else if (child_pid == 0) {
         /* Child process */
-        char *argv[2];
-        argv[0] = command;
-        argv[1] = NULL;
-
         /* Redirect standard output to the parent process (terminal) */
         if (dup2(STDOUT_FILENO, STDOUT_FILENO) == -1) {
             perror("dup2");
@@ -37,7 +45,7 @@ void execute_command(char *command) {
         /* Close standard input (stdin) to prevent further input reading */
         close(STDIN_FILENO);
 
-        if (execve(command, argv, NULL) == -1) {
+        if (execve(args[0], args, NULL) == -1) {
             perror("execve");
             exit(1);
         }
@@ -69,4 +77,3 @@ int main() {
 
     return 0;
 }
-
