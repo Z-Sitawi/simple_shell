@@ -8,8 +8,10 @@
 #define MAX_INPUT_SIZE 1024
 
 void display_prompt() {
-    printf("#cisfun$ ");
-    fflush(stdout);
+    if (isatty(STDIN_FILENO)) {
+        printf("#cisfun$ ");
+        fflush(stdout);
+    }
 }
 
 void execute_command(char *command) {
@@ -26,6 +28,15 @@ void execute_command(char *command) {
         argv[0] = command;
         argv[1] = NULL;
 
+        /* Redirect standard output to the parent process (terminal) */
+        if (dup2(STDOUT_FILENO, STDOUT_FILENO) == -1) {
+            perror("dup2");
+            exit(1);
+        }
+
+        /* Close standard input (stdin) to prevent further input reading */
+        close(STDIN_FILENO);
+
         if (execve(command, argv, NULL) == -1) {
             perror("execve");
             exit(1);
@@ -35,7 +46,6 @@ void execute_command(char *command) {
         wait(&status);
     }
 }
-
 
 int main() {
     char input[MAX_INPUT_SIZE];
@@ -54,9 +64,9 @@ int main() {
         if (strcmp(input, "exit") == 0) {
             break; /* Exit the shell */
         }
-
         execute_command(input);
     }
 
     return 0;
 }
+
