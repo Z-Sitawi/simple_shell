@@ -29,7 +29,7 @@ char *readline(void);
 
 char **tokenize(char *line);
 
-
+int _strcomp(char *str1, char *str2);
 
 
 extern char **environ;
