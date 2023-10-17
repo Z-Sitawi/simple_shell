@@ -31,6 +31,8 @@ char **tokenize(char *line);
 
 int _strcomp(char *str1, char *str2);
 
+char *_str_concat(char *dest, const char *src);
+
 
 extern char **environ;
 
