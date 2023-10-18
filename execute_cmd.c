@@ -11,21 +11,32 @@ int execute_cmd(char **cmd, char **av)
 {
 	pid_t child_PID_value;
 	int status;
+	char *full_cmd;
+
+	full_cmd = get_path(cmd[0]);
+	if (!full_cmd)
+	{
+		show_error():
+		free_array_of_str(cmd);
+		return (127);
+	}
 
 	child_PID_value = fork();
 
 	if (child_PID_value == 0)
 	{
-		if (execve(cmd[0], cmd, environ) == -1)
+		if (execve(full_cmd, cmd, environ) == -1)
 		{
-			perror(av[0]);
+			free(full_cmd);
+			full_cmd = NULL;
 			free_array_of_str(cmd);
-			exit(127);
 		}
 	}
 	else
 	{
 		waitpid(child_PID_value, &status, 0);
+		free(full_cmd);
+		full_cmd = NULL;
 		free_array_of_str(cmd);
 
 	}
