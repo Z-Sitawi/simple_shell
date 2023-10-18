@@ -1,81 +1,151 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include "main.h"
 
-#define MAX_INPUT_SIZE 1024
-#define MAX_ARGS 128
+/**
+ * readline - reads the command line
+ *
+ * Return: line read.
+ */
 
-void display_prompt() {
-    if (isatty(STDIN_FILENO)) {
-        char *prompt = "#cisfun$ ";
-        write(STDOUT_FILENO, prompt, strlen(prompt));
-        /* Use write to output the prompt directly to STDOUT */
-    }
+char *readline(void)
+{
+	char *line = NULL;
+	size_t line_size = 0;
+	ssize_t chars_read;
+
+	if (isatty(STDIN_FILENO))
+	{
+		write(STDOUT_FILENO, "$ ", 2);
+	}
+	chars_read = getline(&line, &line_size, stdin);
+
+	if (chars_read == -1)
+	{
+		free(line);
+		line = NULL;
+	}
+
+		return (line);
 }
 
-void execute_command(char *command) {
-    pid_t child_pid;
-    int status;
-    char *args[MAX_ARGS]; /* Array to hold command and its arguments */
-    int arg_count = 0;
+/**
+ * tokenize - it splits the line ito single words.
+ *
+ * @line: the line to be tokenized.
+ * Return: the tokenization.
+ */
 
-    /* Tokenize the command line into arguments */
-    char *token = strtok(command, " \t\n");
-    while (token != NULL) {
-        args[arg_count] = token;
-        arg_count++;
-        token = strtok(NULL, " \t\n");
-    }
-    args[arg_count] = NULL; /* Null-terminate the array of arguments */
+char **tokenize(char *line)
+{
+	char *token = NULL, *linedup = NULL, **commands = NULL;
+	int count = 0, i = 0;
 
-    child_pid = fork();
-
-    if (child_pid == -1) {
-        perror("fork");
-    } else if (child_pid == 0) {
-        /* Child process */
-        /* Redirect standard output to the parent process (terminal) */
-        if (dup2(STDOUT_FILENO, STDOUT_FILENO) == -1) {
-            perror("dup2");
-            exit(1);
-        }
-
-        /* Close standard input (stdin) to prevent further input reading */
-        close(STDIN_FILENO);
-
-        if (execve(args[0], args, NULL) == -1) {
-            perror("execve");
-            exit(1);
-        }
-    } else {
-        /* Parent process */
-        wait(&status);
-    }
+	if (!line)
+		return (NULL);
+	linedup = _strdup(line);
+	token = strtok(line, DELIM);
+	if (token == NULL)
+	{
+		free(line);
+		free(linedup);
+		line = NULL;
+		linedup = NULL;
+		return (NULL);
+	}
+	while (token)
+	{
+		count++;
+		token = strtok(NULL, DELIM);
+	}
+	free(line);
+	line = NULL;
+	commands = malloc(sizeof(char *) * (count + 1));
+	if (!commands)
+	{
+		free(linedup);
+		linedup = NULL;
+		return (NULL);
+	}
+	token = strtok(linedup, DELIM);
+	while (token)
+	{
+		commands[i] = _strdup(token);
+		token = strtok(NULL, DELIM);
+		i++;
+	}
+	commands[i] = NULL;
+	free(linedup);
+	linedup = NULL;
+	return (commands);
 }
 
-int main() {
-    char input[MAX_INPUT_SIZE];
+/**
+ * execute_cmd - executes commands in a child pid.
+ * @cmd: command to execute.
+ * @av: argument vector.
+ *
+ * Return: exit-s the value of status.
+ */
 
-    while (1) {
-        display_prompt();
 
-        if (fgets(input, sizeof(input), stdin) == NULL) {
-            char newline = '\n';
-            write(STDOUT_FILENO, &newline, 1);
-            break; /* End of file (Ctrl+D) was detected */
-        }
+int execute_cmd(char **cmd, char **av)
+{
+	pid_t child_PID_value;
+	int status;
 
-        /* Remove newline character */
-        input[strcspn(input, "\n")] = '\0';
+	child_PID_value = fork();
 
-        if (strcmp(input, "exit") == 0) {
-            break; /* Exit the shell */
-        }
-        execute_command(input);
-    }
+	if (child_PID_value == 0)
+	{
+		if (execve(cmd[0], cmd, environ) == -1)
+		{
+			perror(av[0]);
+			free_array_of_str(cmd);
+			exit(127);
+		}
+	}
+	else
+	{
+		waitpid(child_PID_value, &status, 0);
+		free_array_of_str(cmd);
 
-    return 0;
+	}
+
+	return (WEXITSTATUS(status));
+}
+
+/**
+ * main - entry point
+ * @ac: arg count
+ * @av: arg vector
+ *
+ * Return: 0 on success, 1 on error
+ */
+
+int main(int ac, char **av)
+{
+	char *line = NULL;
+	char **commands = NULL;
+	int status = 0;
+
+	(void)ac;
+
+	while (1)
+	{
+		line = readline();
+
+		if (line == NULL)
+		{
+			if (isatty(STDIN_FILENO))
+			{
+				write(STDOUT_FILENO, "\n", 1);
+			}
+			return (status);
+		}
+
+		commands = tokenize(line);
+		if (!commands)
+			continue;
+
+		status = execute_cmd(commands, av);
+	}
 }
