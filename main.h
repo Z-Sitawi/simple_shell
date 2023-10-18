@@ -17,7 +17,7 @@
 
 char *_strcpy(char *dest, char *src);
 
-char *_strdup(char *str); /* allocates memory dynamically "use free" */
+char *_strdup(char *str);	/* allocates memory dynamically "use free" */
 
 size_t _strlen(char *s);
 
@@ -33,15 +33,15 @@ int _strcomp(char *str1, char *str2);
 
 char *_str_concat(char *dest, const char *src);
 
-char *get_env(char *enva);  /* allocates memory dynamically "use free" */
+char *get_env(char *enva);	/* allocates memory dynamically "use free" */
 
-char *get_path(char *cmd); 	 /* allocates memory dynamically "use free" */
+char *get_path(char *cmd);	/* allocates memory dynamically "use free" */
 
 extern char **environ;
 
 char *reverse_str(char *str);
 
-char *num_to_str(int num);  /* allocates memory dynamically "use free" */
+char *num_to_str(int num);	/* allocates memory dynamically "use free" */
 
 void display_error(char *pname, char *cmd, int index);
 #endif
