@@ -41,7 +41,7 @@ extern char **environ;
 
 char *reverse_str(char *str);
 
-char *num_to_str(int num);
+char *num_to_str(int num);  /* allocates memory dynamically "use free" */
 
 void display_error(char *pname, char *cmd, int index);
 #endif

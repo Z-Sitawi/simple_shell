@@ -12,7 +12,7 @@ char *reverse_str(char *str)
 {
 	int left = 0;
 	int right = _strlen(str) - 1;
-	char tempi;
+	char temp;
 
 	while (left < right)
 	{

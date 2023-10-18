@@ -2,7 +2,8 @@
 /**
  * execute_cmd - executes commands in a child pid.
  * @cmd: command to execute.
- * @av: argument vector.
+ * @av: argument vector
+ * @index: refers to the index of the not found command..
  *
  * Return: exit-s the value of status.
  */
@@ -16,7 +17,7 @@ int execute_cmd(char **cmd, char **av, int index)
 	full_cmd = get_path(cmd[0]);
 	if (!full_cmd)
 	{
-		display_error(pname, cmd, index);
+		display_error(av[0], cmd[0], index);
 		free_array_of_str(cmd);
 		return (127);
 	}
