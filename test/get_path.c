@@ -3,21 +3,31 @@
  * get_path - It gets the full path of a cmd.
  *
  * @cmd: The enterd cmd.
+ * Return: full path or NULL if fail.
  */
 
 char *get_path(char *cmd)
 {
 	char *path_val, *full_path, *folder;
 	struct stat st;
+	int i;
 
+	for (i = 0; cmd[i]; i++)
+	{
+		if (cmd[i] == '/')
+		{
+			if (stat(cmd, &st) == 0)
+				return (_strdup(cmd));
+			return (NULL);
+		}
+	}
 	path_val = get_env("PATH");
-
+	if (!path_val)
+		return (NULL);
 	folder = strtok(path_val, ":");
 	while (folder != NULL)
 	{
-		/* size = (folder len) + "/" + (command len) + "\0" */
 		full_path = malloc(_strlen(folder) + _strlen(cmd) + 2);
-
 		if (full_path)
 		{
 			_strcpy(full_path, folder);
@@ -35,5 +45,5 @@ char *get_path(char *cmd)
 		}
 	}
 	free(path_val);
-
+	return (NULL);
 }
