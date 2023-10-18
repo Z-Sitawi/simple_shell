@@ -32,17 +32,3 @@ char *get_env(char *enva)
 
 	return (NULL);
 }
-
-int main(void)
-{
-	char *str, *val;
-
-	printf("enter cmd: ");
-	scanf("%s", str);
-
-	val = get_env(str);
-
-	printf("%s\n", val);
-
-	return (0);
-}

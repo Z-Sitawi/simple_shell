@@ -35,6 +35,7 @@ char *_str_concat(char *dest, const char *src);
 
 char *get_env(char *enva);  /* allocates memory dynamically "use free" */
 
+char *get_path(char *cmd);
 
 extern char **environ;
 

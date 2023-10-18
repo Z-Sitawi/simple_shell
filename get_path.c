@@ -3,6 +3,8 @@
  * get_path - It gets the full path of a cmd.
  *
  * @cmd: The enterd cmd.
+ *
+ * Return: full path / NULL if cmd not found..
  */
 
 char *get_path(char *cmd)
@@ -26,14 +28,16 @@ char *get_path(char *cmd)
 
 			if (stat(full_path, &st) == 0)
 			{
-				free(path_val;
+				free(path_val);
 				path_val = NULL;
 				return (full_path);
 			}
 			free(full_path);
 			full_path = NULL;
+			folder = strtok(NULL, ":");
 		}
 	}
 	free(path_val);
+	return (NULL);
 
 }
