@@ -9,22 +9,57 @@
 char *readline(void)
 {
 	char *line = NULL;
-	size_t line_size = 0;
-	ssize_t chars_read;
+	size_t line_len = 0;
+	ssize_t nbr;
 
 	if (isatty(STDIN_FILENO))
 	{
 		write(STDOUT_FILENO, "$ ", 2);
 	}
-	chars_read = getline(&line, &line_size, stdin);
+	nbr = getline(&line, &line_len, stdin);
 
-	if (chars_read == -1)
+	if (nbr == -1)
 	{
 		free(line);
 		line = NULL;
+		return (NULL);
 	}
 
-		return (line);
+	return (line);
+}
+
+/**
+ * execute_cmd - executes commands in a child pid.
+ * @cmd: command to execute.
+ * @av: argument vector.
+ *
+ * Return: exit-s the value of status.
+ */
+
+int execute_cmd(char **cmd, char **av)
+{
+	pid_t child_PID_value;
+	int status;
+
+	child_PID_value = fork();
+
+	if (child_PID_value == 0)
+	{
+		if (execve(cmd[0], cmd, environ) == -1)
+		{
+			perror(av[0]);
+			free_array_of_str(cmd);
+			exit(127);
+		}
+	}
+	else
+	{
+		waitpid(child_PID_value, &status, 0);
+		free_array_of_str(cmd);
+
+	}
+
+	return (WEXITSTATUS(status));
 }
 
 /**
@@ -48,7 +83,7 @@ char **tokenize(char *line)
 		free(line);
 		free(linedup);
 		line = NULL;
-		linedup = NULL;
+		line = NULL;
 		return (NULL);
 	}
 	while (token)
@@ -76,41 +111,6 @@ char **tokenize(char *line)
 	free(linedup);
 	linedup = NULL;
 	return (commands);
-}
-
-/**
- * execute_cmd - executes commands in a child pid.
- * @cmd: command to execute.
- * @av: argument vector.
- *
- * Return: exit-s the value of status.
- */
-
-
-int execute_cmd(char **cmd, char **av)
-{
-	pid_t child_PID_value;
-	int status;
-
-	child_PID_value = fork();
-
-	if (child_PID_value == 0)
-	{
-		if (execve(cmd[0], cmd, environ) == -1)
-		{
-			perror(av[0]);
-			free_array_of_str(cmd);
-			exit(127);
-		}
-	}
-	else
-	{
-		waitpid(child_PID_value, &status, 0);
-		free_array_of_str(cmd);
-
-	}
-
-	return (WEXITSTATUS(status));
 }
 
 /**
