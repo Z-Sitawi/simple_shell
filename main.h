@@ -21,7 +21,7 @@ char *_strdup(char *str); /* allocates memory dynamically "use free" */
 
 size_t _strlen(char *s);
 
-int execute_cmd(char **cmd, char **av);
+int execute_cmd(char **cmd, char **av, int index);
 
 void free_array_of_str(char **aos);
 
@@ -39,4 +39,9 @@ char *get_path(char *cmd); 	 /* allocates memory dynamically "use free" */
 
 extern char **environ;
 
+char *reverse_str(char *str);
+
+char *num_to_str(int num);
+
+void display_error(char *pname, char *cmd, int index);
 #endif

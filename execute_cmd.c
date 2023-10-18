@@ -7,7 +7,7 @@
  * Return: exit-s the value of status.
  */
 
-int execute_cmd(char **cmd, char **av)
+int execute_cmd(char **cmd, char **av, int index)
 {
 	pid_t child_PID_value;
 	int status;
@@ -16,7 +16,7 @@ int execute_cmd(char **cmd, char **av)
 	full_cmd = get_path(cmd[0]);
 	if (!full_cmd)
 	{
-		show_error():
+		display_error(pname, cmd, index);
 		free_array_of_str(cmd);
 		return (127);
 	}

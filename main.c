@@ -11,7 +11,7 @@ int main(int ac, char **av)
 {
 	char *line = NULL;
 	char **commands = NULL;
-	int status = 0;
+	int status = 0, index = 0;
 
 	(void)ac;
 
@@ -27,11 +27,12 @@ int main(int ac, char **av)
 			}
 			return (status);
 		}
+		index++;
 
 		commands = tokenize(line);
 		if (!commands)
 			continue;
 
-		status = execute_cmd(commands, av);
+		status = execute_cmd(commands, av, index);
 	}
 }
