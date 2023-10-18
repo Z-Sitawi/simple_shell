@@ -17,8 +17,8 @@ The "Gates of Shell" project, an integral part of the first trimester coursework
 
 This project wouldn't have been possible without the dedicated efforts of the following contributors:
 
-- [Zakaria Aaichaou](https://github.com/Z-Sitawi) 👨<200d>💻
-- [Abdelouafi Er-raqui](https://github.com/Abdelouafi09) 👨<200d>💻
+- [Zakaria Aaichaou](https://github.com/Z-Sitawi) 👨💻
+- [Abdelouafi Er-raqui](https://github.com/Abdelouafi09) 👨💻
 
 ## Getting Started 🚀
 
