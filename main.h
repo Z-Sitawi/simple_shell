@@ -20,7 +20,7 @@ void exec_builtin(char **cmd, int status, char **av, int index);
 
 void my_exit(char **cmd, int stat);
 
-void my_env(int stat);
+void my_env(char **cmd, int stat);
 
 char *_strcpy(char *dest, char *src);
 
