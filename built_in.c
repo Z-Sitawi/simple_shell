@@ -52,6 +52,7 @@ void my_exit(char **cmd, int stat)
 /**
  * my_env - display the env content
  * @stat: the status
+ * @cmd: commands array
  */
 void my_env(char **cmd, int stat)
 {
