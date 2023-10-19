@@ -77,6 +77,8 @@ char **tokenize(char *line)
 	commands[i] = NULL;
 	free(linedup);
 	linedup = NULL;
+	if (count == 1 && strcmp(commands[0], "exit") == 0)
+		exit(1);
 	return (commands);
 }
 
