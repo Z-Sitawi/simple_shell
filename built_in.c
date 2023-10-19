@@ -51,7 +51,6 @@ void my_exit(char **cmd, int stat)
 
 /**
  * my_env - display the env content
- * @cmd: command tokens
  * @stat: the status
  */
 void my_env(int stat)
