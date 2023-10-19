@@ -14,13 +14,16 @@
 int _strcomp(char *str1, char *str2)
 {
 	int compare;
+	char *str3, *str4;
 
-	while ((*str1 != '\0') && (*str1 == *str2))
+	str3 = str1;
+	str4 = str2;
+	while ((*str3 != '\0') && (*str3 == *str4))
 	{
-		str1++;
-		str2++;
+		str3++;
+		str4++;
 	}
 
-	compare = (int)*str1 - (int)*str2;
+	compare = (int)*str3 - (int)*str4;
 	return (compare);
 }

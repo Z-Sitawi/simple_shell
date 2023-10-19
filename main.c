@@ -30,7 +30,7 @@ char *readline(void)
 
 
 /**
- * tokenize - it splits the line ito single words.
+ * tokenize - it splits the line into single words.
  *
  * @line: the line to be tokenized.
  * Return: the tokenization.
@@ -77,9 +77,53 @@ char **tokenize(char *line)
 	commands[i] = NULL;
 	free(linedup);
 	linedup = NULL;
-	if (count == 1 && strcmp(commands[0], "exit") == 0)
-		exit(1);
 	return (commands);
+}
+
+/**
+ * execute_cmd - executes commands in a child pid.
+ * @cmd: command to execute.
+ * @av: argument vector
+ * @index: refers to the index of the not found command..
+ *
+ * Return: exit-s the value of status.
+ */
+
+int execute_cmd(char **cmd, char **av, int index)
+{
+	pid_t child_PID_value;
+	int status;
+	char *full_cmd;
+
+	full_cmd = get_path(cmd[0]);
+	if (!full_cmd)
+	{
+		display_error(av[0], cmd[0], index);
+		free_array_of_str(cmd);
+		return (127);
+	}
+
+	child_PID_value = fork();
+
+	if (child_PID_value == 0)
+	{
+		if (execve(full_cmd, cmd, environ) == -1)
+		{
+			free(full_cmd);
+			full_cmd = NULL;
+			free_array_of_str(cmd);
+		}
+	}
+	else
+	{
+		waitpid(child_PID_value, &status, 0);
+		free(full_cmd);
+		full_cmd = NULL;
+		free_array_of_str(cmd);
+
+	}
+
+	return (WEXITSTATUS(status));
 }
 
 /**
@@ -93,7 +137,7 @@ char **tokenize(char *line)
 int main(int ac, char **av)
 {
 	char *line = NULL;
-	char **commands = NULL;
+	char **cmd = NULL;
 	int status = 0, index = 0;
 
 	(void)ac;
@@ -112,10 +156,11 @@ int main(int ac, char **av)
 		}
 		index++;
 
-		commands = tokenize(line);
-		if (!commands)
+		cmd = tokenize(line);
+		if (!cmd)
 			continue;
-
-		status = execute_cmd(commands, av, index);
+		if (check_builtin(cmd[0]))
+			exec_builtin(cmd, status, av, index);
+		status = execute_cmd(cmd, av, index);
 	}
 }
