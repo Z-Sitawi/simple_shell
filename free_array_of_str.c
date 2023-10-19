@@ -6,15 +6,17 @@
 
 void free_array_of_str(char **aos)
 {
-	int i = 0;
+	int i;
 
-	while (aos[i] != NULL)
+	if (aos == NULL)
+	{
+		return;
+	}
+
+	for (i = 0; aos[i] != NULL; i++)
 	{
 		free(aos[i]);
-		aos[i] = NULL;
-		i++;
 	}
 
 	free(aos);
-	aos = NULL;
 }

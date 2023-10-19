@@ -35,7 +35,7 @@ void exec_builtin(char **cmd, int status, char **av, int index)
 	if (_strcomp(cmd[0], "exit") == 0)
 		my_exit(cmd, status);
 	if (_strcomp(cmd[0], "env") == 0)
-		my_env(cmd, status);
+		my_env(status);
 }
 
 /**
@@ -54,7 +54,7 @@ void my_exit(char **cmd, int stat)
  * @cmd: command tokens
  * @stat: the status
  */
-void my_env(char **cmd, int stat)
+void my_env(int stat)
 {
 	int index;
 
@@ -64,5 +64,4 @@ void my_env(char **cmd, int stat)
 		write(STDOUT_FILENO, environ[index], _strlen(environ[index]));
 		write(STDOUT_FILENO, "\n", 1);
 	}
-	free_array_of_str(cmd);
 }
