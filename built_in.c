@@ -45,7 +45,7 @@ void exec_builtin(char **cmd, int *status, char **av, int index)
 void my_exit(char **cmd, int *stat, char **av, int index)
 {
 	int exit_stat = *stat;
-	char *idx, message[] = ": exit: Illegal number:";
+	char *idx, message[] = ": exit: Illegal number: ";
 
 	if (cmd[1])
 	{
