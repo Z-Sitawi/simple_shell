@@ -27,13 +27,10 @@ int check_builtin(char *cmd)
  * @av: the args vector
  * @index: index to use after
  */
-void exec_builtin(char **cmd, int status, char **av, int index)
+void exec_builtin(char **cmd, int *status, char **av, int index)
 {
-	(void) av;
-	(void) index;
-
 	if (_strcomp(cmd[0], "exit") == 0)
-		my_exit(cmd, status);
+		my_exit(cmd, status, av, index);
 	if (_strcomp(cmd[0], "env") == 0)
 		my_env(cmd, status);
 }
@@ -42,11 +39,35 @@ void exec_builtin(char **cmd, int status, char **av, int index)
  * my_exit - exit the shell
  * @cmd: command tokens
  * @stat: the status
+ * @av: args
+ * @index: the index int
  */
-void my_exit(char **cmd, int stat)
+void my_exit(char **cmd, int *stat, char **av, int index)
 {
+	int exit_stat = *stat;
+	char *idx, message[] = ": exit: Illegal number:";
+
+	if (cmd[1])
+	{
+		if (is_pos_int(cmd[1]))
+		{
+			exit_stat = _atoi(cmd[1]);
+		}
+		else
+		{
+			idx = _itoa(index);
+			write(STDERR_FILENO, av[0], _strlen(av[0]));
+			write(STDERR_FILENO, ": ", 2);
+			write(STDERR_FILENO, idx, _strlen(idx));
+			write(STDERR_FILENO, message, _strlen(message));
+			write(STDERR_FILENO, cmd[1], _strlen(cmd[1]));
+			write(STDERR_FILENO, "\n", 1);
+			free_array_of_str(cmd);
+			return;
+		}
+	}
 	free_array_of_str(cmd);
-	exit(stat);
+	exit(exit_stat);
 }
 
 /**
@@ -54,15 +75,16 @@ void my_exit(char **cmd, int stat)
  * @stat: the status
  * @cmd: commands array
  */
-void my_env(char **cmd, int stat)
+void my_env(char **cmd, int *stat)
 {
 	int index;
 
-	(void) stat;
+	(void) cmd;
 	for (index = 0; environ[index]; index++)
 	{
 		write(STDOUT_FILENO, environ[index], _strlen(environ[index]));
 		write(STDOUT_FILENO, "\n", 1);
 	}
 	free_array_of_str(cmd);
+	*stat = 0;
 }

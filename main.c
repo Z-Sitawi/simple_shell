@@ -160,8 +160,8 @@ int main(int ac, char **av)
 		if (!cmd)
 			continue;
 		if (check_builtin(cmd[0]))
-			exec_builtin(cmd, status, av, index);
-
-		status = execute_cmd(cmd, av, index);
+			exec_builtin(cmd, &status, av, index);
+		else
+			status = execute_cmd(cmd, av, index);
 	}
 }

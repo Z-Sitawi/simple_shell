@@ -16,11 +16,19 @@
 
 int check_builtin(char *cmd);
 
-void exec_builtin(char **cmd, int status, char **av, int index);
+void exec_builtin(char **cmd, int *status, char **av, int index);
 
-void my_exit(char **cmd, int stat);
+void my_exit(char **cmd, int *stat, char **av, int index);
 
-void my_env(char **cmd, int stat);
+void my_env(char **cmd, int *stat);
+
+int is_pos_int(char *s);
+
+int _atoi(char *s);
+
+char* _itoa(int num);
+
+void rv(char str[], int length);
 
 char *_strcpy(char *dest, char *src);
 
