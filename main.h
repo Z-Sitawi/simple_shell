@@ -26,7 +26,7 @@ int is_pos_int(char *s);
 
 int _atoi(char *s);
 
-char* _itoa(int num);
+char *_itoa(int num);
 
 void rv(char str[], int length);
 
