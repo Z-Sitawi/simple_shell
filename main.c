@@ -50,7 +50,7 @@ char **tokenize(char *line)
 		free(line);
 		free(linedup);
 		line = NULL;
-		line = NULL;
+		linedup = NULL;
 		return (NULL);
 	}
 	while (token)

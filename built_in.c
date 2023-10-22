@@ -62,7 +62,6 @@ void my_exit(char **cmd, int *stat, char **av, int index)
 			write(STDERR_FILENO, message, _strlen(message));
 			write(STDERR_FILENO, cmd[1], _strlen(cmd[1]));
 			write(STDERR_FILENO, "\n", 1);
-			free_array_of_str(cmd);
 			*stat = 2;
 			return;
 		}
